@@ -7,7 +7,7 @@ import { Colors, Spacing } from '@/constants/theme';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn, error: authError, clearError } = useAuth();
+  const { signIn, loading, error: authError, clearError } = useAuth();
   const [localError, setLocalError] = useState<string | null>(null);
 
   const isDark = false; // TODO: Get from theme context
@@ -75,7 +75,7 @@ export default function LoginScreen() {
           },
         ]}
         submitButtonText="Sign In"
-        isLoading={authError !== null}
+        isLoading={loading}
         error={localError ?? authError ?? undefined}
         onSubmit={handleLogin}
         onSecondaryAction={() => router.push('/(auth)/signup')}

@@ -303,6 +303,48 @@ CREATE OR REPLACE TRIGGER contacts_updated_at
   BEFORE UPDATE ON contacts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- ============================================================================
+-- HANDLE NEW AUTH USER — auto-create public.users profile
+-- ============================================================================
+-- This trigger fires AFTER every INSERT on auth.users (i.e. every signUp).
+-- It runs as SECURITY DEFINER so it always has permission to write to
+-- public.users regardless of RLS.  The full_name is taken from
+-- raw_user_meta_data, which is what we pass in supabase.auth.signUp options.data.
+-- ON CONFLICT (id) DO UPDATE ensures idempotency if the app code also tries
+-- to insert (e.g. when email confirmation is disabled and a session exists).
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.users (id, email, full_name)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', '')
+  )
+  ON CONFLICT (id) DO UPDATE
+    SET
+      email      = EXCLUDED.email,
+      full_name  = COALESCE(EXCLUDED.full_name, public.users.full_name),
+      updated_at = NOW()
+    WHERE public.users.full_name IS NULL OR public.users.full_name = '';
+
+  RETURN NEW;
+END;
+$$;
+
+-- Drop and recreate so re-running the script is safe
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+
+-- ============================================================================
 -- HELPER FUNCTIONS (called via supabase.rpc)
 -- ============================================================================
 

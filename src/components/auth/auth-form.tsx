@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/common/button';
 import { Input } from '@/components/common/input';
 import { Spacing } from '@/constants/theme';
@@ -37,44 +37,51 @@ export const AuthForm: React.FC<AuthFormProps> = ({
     fields.reduce((acc, field) => ({ ...acc, [field.name]: '' }), {})
   );
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  // Prevent double-submits independently of the parent's loading flag
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleFieldChange = (fieldName: string, value: string) => {
     setFormData((prev) => ({ ...prev, [fieldName]: value }));
-    // Clear field error when user starts typing
     if (fieldErrors[fieldName]) {
       setFieldErrors((prev) => ({ ...prev, [fieldName]: '' }));
     }
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting || isLoading) return;
+    setIsSubmitting(true);
     try {
       await onSubmit(formData);
     } catch (err) {
-      console.error('Form submission error:', err);
+      // errors are surfaced via the `error` prop by the parent
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const busy = isLoading || isSubmitting;
+
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-    },
+    container: { flex: 1, justifyContent: 'center' },
     content: {
       paddingHorizontal: Spacing.three,
       paddingVertical: Spacing.four,
     },
+    errorBanner: {
+      backgroundColor: 'rgba(255, 59, 48, 0.1)',
+      borderRadius: 8,
+      paddingHorizontal: Spacing.two,
+      paddingVertical: Spacing.two,
+      marginBottom: Spacing.two,
+    },
     errorText: {
       color: '#FF3B30',
       fontSize: 14,
-      marginBottom: Spacing.two,
       textAlign: 'center',
+      lineHeight: 20,
     },
-    button: {
-      marginBottom: Spacing.two,
-    },
-    secondaryButton: {
-      marginTop: Spacing.two,
-    },
+    button: { marginBottom: Spacing.two },
+    secondaryButton: { marginTop: Spacing.two },
   });
 
   return (
@@ -82,10 +89,16 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.content}>
-        {error && <View style={{ marginBottom: Spacing.two }}>
-          {typeof error === 'string' && <View style={styles.errorText}>{error}</View>}
-        </View>}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Error banner — uses Text so React Native renders it correctly */}
+        {!!error && (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        )}
 
         {fields.map((field) => (
           <Input
@@ -102,16 +115,18 @@ export const AuthForm: React.FC<AuthFormProps> = ({
                   ? 'phone-pad'
                   : 'default'
             }
+            autoCapitalize={field.type === 'email' ? 'none' : 'sentences'}
+            autoCorrect={field.type !== 'email' && field.type !== 'password'}
             error={fieldErrors[field.name]}
             required={field.required}
           />
         ))}
 
         <Button
-          title={submitButtonText}
+          title={busy ? 'Please wait…' : submitButtonText}
           onPress={handleSubmit}
-          disabled={isLoading}
-          loading={isLoading}
+          disabled={busy}
+          loading={busy}
           fullWidth
           style={styles.button}
         />
@@ -122,6 +137,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             onPress={onSecondaryAction}
             variant="secondary"
             fullWidth
+            disabled={busy}
             style={styles.secondaryButton}
           />
         )}

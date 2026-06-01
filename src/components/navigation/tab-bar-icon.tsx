@@ -16,11 +16,13 @@ export const TabBarIcon: React.FC<TabBarIconProps> = ({
 }) => {
   const iconMap: Record<string, string> = {
     home: '🏠',
+    index: '🏠',
     'komi-send': '📤',
     'komi-sol': '💡',
     'komi-marche': '🛒',
     'komi-learn': '📚',
     'komi-voix': '🎤',
+    profile: '👤',
     settings: '⚙️',
   };
 

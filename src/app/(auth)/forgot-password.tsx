@@ -8,7 +8,7 @@ import { Validation } from '@/utils/validation';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
-  const { resetPassword, error: authError, clearError } = useAuth();
+  const { resetPassword, loading, error: authError, clearError } = useAuth();
   const [localError, setLocalError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -106,7 +106,7 @@ export default function ForgotPasswordScreen() {
           },
         ]}
         submitButtonText="Send Reset Link"
-        isLoading={authError !== null}
+        isLoading={loading}
         error={localError ?? authError ?? undefined}
         onSubmit={handleResetPassword}
         onSecondaryAction={() => router.push('/(auth)/login')}

@@ -1,12 +1,18 @@
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { useColorScheme } from 'react-native';
 
 import { TabBarIcon } from '@/components/navigation/tab-bar-icon';
 import { Colors } from '@/constants/theme';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function TabsLayout() {
+  const { user, initialized } = useAuth();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  if (initialized && !user) {
+    return <Redirect href="/(auth)/login" />;
+  }
 
   return (
     <Tabs
@@ -84,6 +90,16 @@ export default function TabsLayout() {
           tabBarLabel: 'Voice',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name="komi-voix" focused={focused} color={String(color)} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarLabel: 'Account',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name="profile" focused={focused} color={String(color)} />
           ),
         }}
       />

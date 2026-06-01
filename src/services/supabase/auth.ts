@@ -114,6 +114,22 @@ export class AuthService {
   }
 
   /**
+   * Resend the email confirmation link.
+   * Supabase rate-limits this to once per 60 s per email address.
+   */
+  static async resendConfirmation(email: string) {
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+      });
+      if (error) throw error;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  /**
    * Listen to auth state changes
    */
   static onAuthStateChange(callback: (event: string, session: any) => void) {

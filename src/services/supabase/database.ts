@@ -42,9 +42,14 @@ export class DatabaseService {
 
   static async createUserProfile(userId: string, profile: Record<string, any>) {
     try {
+      // Use upsert so this is safe to call even if the handle_new_user trigger
+      // already created the row (e.g. when email confirmation is disabled).
       const { data, error } = await supabase
         .from('users')
-        .insert([{ id: userId, ...profile }])
+        .upsert(
+          [{ id: userId, ...profile }],
+          { onConflict: 'id', ignoreDuplicates: false }
+        )
         .select()
         .single();
       if (error) throw error;
