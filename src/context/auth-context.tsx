@@ -69,10 +69,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (session?.user) {
           try {
             const profile = await DatabaseService.getUserProfile(session.user.id);
+            console.log('[AuthContext] initAuth getUserProfile result:', JSON.stringify(profile));
             setUser(profileFromRow(session.user.id, session.user.email ?? '', profile));
-          } catch {
-            // Profile might not exist yet for very new accounts
-            setUser({ id: session.user.id, email: session.user.email ?? '' });
+          } catch (err) {
+            console.error('[AuthContext] initAuth getUserProfile FAILED:', err);
+            setUser({
+              id: session.user.id,
+              email: session.user.email ?? '',
+              fullName: session.user.user_metadata?.full_name ?? undefined,
+            });
           }
         }
       } catch (err) {
@@ -85,12 +90,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
 
     const { data } = AuthService.onAuthStateChange(async (event, session) => {
+      console.log('[AuthContext] onAuthStateChange event:', event, 'userId:', session?.user?.id ?? 'none');
       if (session?.user) {
         try {
           const profile = await DatabaseService.getUserProfile(session.user.id);
+          console.log('[AuthContext] getUserProfile result:', JSON.stringify(profile));
           setUser(profileFromRow(session.user.id, session.user.email ?? '', profile));
-        } catch {
-          setUser({ id: session.user.id, email: session.user.email ?? '' });
+        } catch (err) {
+          console.error('[AuthContext] getUserProfile FAILED:', err);
+          setUser({
+            id: session.user.id,
+            email: session.user.email ?? '',
+            fullName: session.user.user_metadata?.full_name ?? undefined,
+          });
         }
       } else {
         setUser(null);

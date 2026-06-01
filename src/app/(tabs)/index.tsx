@@ -74,6 +74,8 @@ export default function HomeScreen() {
     },
   });
 
+  console.log('[HomeScreen] user at render:', JSON.stringify(user));
+
   const modules = [
     { id: 'send', name: 'KomiSend', icon: '📤' },
     { id: 'sol', name: 'KomiSol', icon: '💡' },
