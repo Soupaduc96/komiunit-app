@@ -1,15 +1,33 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
-import { useColorScheme } from 'react-native';
-
+import { Stack } from 'expo-router';
+import { AuthProvider } from '@/context/auth-context';
+import { useAuth } from '@/hooks/use-auth';
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { ErrorBoundary } from '@/components/common/error-boundary';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+function RootLayoutNav() {
+  const { user, initialized } = useAuth();
+
+  if (!initialized) {
+    return <AnimatedSplashOverlay />;
+  }
+
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
-    </ThemeProvider>
+    <Stack screenOptions={{ headerShown: false }}>
+      {user ? (
+        <Stack.Screen name="(tabs)" options={{ animation: 'none' }} />
+      ) : (
+        <Stack.Screen name="(auth)" options={{ animation: 'none' }} />
+      )}
+    </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
