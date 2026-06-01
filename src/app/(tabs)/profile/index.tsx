@@ -80,7 +80,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { user, uploading, pickAndUploadAvatar } = useProfile();
+  const { user, uploading, error, success, pickAndUploadAvatar, clearMessages } = useProfile();
 
   const styles = StyleSheet.create({
     container: {
@@ -149,6 +149,16 @@ export default function ProfileScreen() {
       color: isDark ? Colors.dark.textSecondary : Colors.light.textSecondary,
       paddingVertical: Spacing.three,
     },
+    banner: {
+      marginHorizontal: Spacing.three,
+      marginTop: Spacing.two,
+      padding: Spacing.two,
+      borderRadius: 10,
+    },
+    bannerText: {
+      fontSize: 14,
+      textAlign: 'center',
+    },
   });
 
   return (
@@ -176,6 +186,18 @@ export default function ProfileScreen() {
           </Text>
         )}
       </Card>
+
+      {/* Avatar upload feedback */}
+      {success && (
+        <Pressable style={[styles.banner, { backgroundColor: 'rgba(52,199,89,0.12)' }]} onPress={clearMessages}>
+          <Text style={[styles.bannerText, { color: '#34C759' }]}>✓ {success}</Text>
+        </Pressable>
+      )}
+      {error && (
+        <Pressable style={[styles.banner, { backgroundColor: 'rgba(255,59,48,0.1)' }]} onPress={clearMessages}>
+          <Text style={[styles.bannerText, { color: '#FF3B30' }]}>{error}</Text>
+        </Pressable>
+      )}
 
       {/* Account section */}
       <Text style={styles.sectionLabel}>Account</Text>

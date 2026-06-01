@@ -84,7 +84,7 @@ export const Button: React.FC<ButtonProps> = ({
       style={[styles.button, style]}
       android_ripple={{ color: 'rgba(0,0,0,0.1)' }}
     >
-      <Text style={styles.text}>{loading ? 'Loading...' : title}</Text>
+      <Text style={styles.text}>{title}</Text>
     </Pressable>
   );
 };
