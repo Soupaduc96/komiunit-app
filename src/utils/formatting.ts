@@ -5,10 +5,16 @@ export const Formatting = {
    * Format currency
    */
   currency: (amount: number, currency: string = 'USD'): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency,
-    }).format(amount);
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency || 'USD',
+      }).format(isFinite(amount) ? amount : 0);
+    } catch {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+        isFinite(amount) ? amount : 0,
+      );
+    }
   },
 
   /**

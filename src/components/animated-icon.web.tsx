@@ -6,7 +6,7 @@ const DURATION = 300;
 const classes: Record<string, string> = {};
 
 export function AnimatedSplashOverlay() {
-  return null;
+  return <View style={{ flex: 1, backgroundColor: '#208AEF' }} />;
 }
 
 const keyframe = new Keyframe({

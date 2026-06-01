@@ -69,10 +69,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (session?.user) {
           try {
             const profile = await DatabaseService.getUserProfile(session.user.id);
-            console.log('[AuthContext] initAuth getUserProfile result:', JSON.stringify(profile));
             setUser(profileFromRow(session.user.id, session.user.email ?? '', profile));
           } catch (err) {
-            console.error('[AuthContext] initAuth getUserProfile FAILED:', err);
+            console.error('[AuthContext] getUserProfile failed on init:', err);
             setUser({
               id: session.user.id,
               email: session.user.email ?? '',
@@ -90,14 +89,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initAuth();
 
     const { data } = AuthService.onAuthStateChange(async (event, session) => {
-      console.log('[AuthContext] onAuthStateChange event:', event, 'userId:', session?.user?.id ?? 'none');
       if (session?.user) {
         try {
           const profile = await DatabaseService.getUserProfile(session.user.id);
-          console.log('[AuthContext] getUserProfile result:', JSON.stringify(profile));
           setUser(profileFromRow(session.user.id, session.user.email ?? '', profile));
         } catch (err) {
-          console.error('[AuthContext] getUserProfile FAILED:', err);
+          console.error('[AuthContext] getUserProfile failed on', event, ':', err);
           setUser({
             id: session.user.id,
             email: session.user.email ?? '',

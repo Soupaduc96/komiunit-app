@@ -8,6 +8,7 @@ import { Solution, SolutionCategory, UserTicket } from '@/types/komi-sol';
 import { Product, CartItem, Cart, Order, ProductCategory } from '@/types/komi-marche';
 import { Course, Lesson, UserProgress, CourseCategory } from '@/types/komi-learn';
 import { Contact, CallLog, VoiceMessage } from '@/types/komi-voix';
+import { Wallet, Transaction, TransactionType, TransactionStatus } from '@/types/wallet';
 
 // ─── User ────────────────────────────────────────────────────────────────────
 
@@ -261,5 +262,37 @@ export function mapVoiceMessage(row: any): VoiceMessage {
     isRead: row.is_read ?? false,
     sentAt: row.sent_at ?? '',
     readAt: row.read_at ?? undefined,
+  };
+}
+
+// ─── Wallet ──────────────────────────────────────────────────────────────────
+
+export function mapWallet(row: any): Wallet {
+  if (!row) throw new Error('mapWallet: received null row');
+  return {
+    id: row.id,
+    userId: row.user_id,
+    balance: parseFloat(row.balance ?? 0),
+    currency: row.currency || 'USD',
+    isActive: row.is_active ?? true,
+    createdAt: row.created_at ?? '',
+    updatedAt: row.updated_at ?? '',
+  };
+}
+
+export function mapTransaction(row: any): Transaction {
+  return {
+    id: row.id,
+    walletId: row.wallet_id,
+    userId: row.user_id,
+    type: row.type as TransactionType,
+    amount: parseFloat(row.amount ?? 0),
+    balanceAfter: parseFloat(row.balance_after ?? 0),
+    description: row.description ?? undefined,
+    referenceId: row.reference_id ?? undefined,
+    referenceType: row.reference_type ?? undefined,
+    status: row.status as TransactionStatus,
+    metadata: row.metadata ?? undefined,
+    createdAt: row.created_at ?? '',
   };
 }
