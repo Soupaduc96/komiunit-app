@@ -1,11 +1,13 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Header } from '@/components/navigation/header';
@@ -192,11 +194,11 @@ export default function HomeScreen() {
   });
 
   const modules = [
-    { id: 'send', name: 'KomiSend', icon: '📤' },
-    { id: 'sol', name: 'KomiSol', icon: '💡' },
-    { id: 'marche', name: 'KomiMarché', icon: '🛒' },
-    { id: 'learn', name: 'KomiLearn', icon: '📚' },
-    { id: 'voix', name: 'KomiVoix', icon: '🎤' },
+    { id: 'send',   name: 'KomiSend',   icon: '📤', route: '/(tabs)/komi-send'   },
+    { id: 'sol',    name: 'KomiSol',    icon: '💡', route: '/(tabs)/komi-sol'    },
+    { id: 'marche', name: 'KomiMarché', icon: '🛒', route: '/(tabs)/komi-marche' },
+    { id: 'learn',  name: 'KomiLearn',  icon: '📚', route: '/(tabs)/komi-learn'  },
+    { id: 'voix',   name: 'KomiVoix',   icon: '🎤', route: '/(tabs)/komi-voix'   },
   ];
 
   return (
@@ -224,10 +226,15 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Services</Text>
         <View style={styles.moduleGrid}>
           {modules.map((module) => (
-            <Card key={module.id} style={styles.moduleCard}>
-              <Text style={styles.moduleIcon}>{module.icon}</Text>
-              <Text style={styles.moduleName}>{module.name}</Text>
-            </Card>
+            <Pressable
+              key={module.id}
+              onPress={() => router.push(module.route as any)}
+            >
+              <Card style={styles.moduleCard}>
+                <Text style={styles.moduleIcon}>{module.icon}</Text>
+                <Text style={styles.moduleName}>{module.name}</Text>
+              </Card>
+            </Pressable>
           ))}
         </View>
       </View>
