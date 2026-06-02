@@ -103,6 +103,7 @@ export default function TabsLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="send" options={{ href: null }} />
     </Tabs>
   );
 }
