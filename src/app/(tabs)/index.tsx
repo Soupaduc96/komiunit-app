@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -195,14 +194,6 @@ export default function HomeScreen() {
     },
   });
 
-  const modules = [
-    { id: 'send',   name: 'KomiSend',   icon: '📤', route: '/komi-send'   },
-    { id: 'sol',    name: 'KomiSol',    icon: '💡', route: '/komi-sol'    },
-    { id: 'marche', name: 'KomiMarché', icon: '🛒', route: '/komi-marche' },
-    { id: 'learn',  name: 'KomiLearn',  icon: '📚', route: '/komi-learn'  },
-    { id: 'voix',   name: 'KomiVoix',   icon: '🎤', route: '/komi-voix'   },
-  ];
-
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Header title="KomiUnit" subtitle={`Welcome, ${user?.fullName || 'User'}`} />
@@ -226,24 +217,62 @@ export default function HomeScreen() {
       {/* Services */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Services</Text>
+
         <View style={styles.moduleGrid}>
-          {modules.map((module) => (
-            <TouchableOpacity
-              key={module.id}
-              style={styles.moduleWrapper}
-              activeOpacity={0.7}
-              onPress={() => {
-                alert(`Clicked ${module.id}`);
-                console.log('Navigate:', module.id);
-                router.navigate(module.route as any);
-              }}
-            >
-              <Card style={styles.moduleCard}>
-                <Text style={styles.moduleIcon}>{module.icon}</Text>
-                <Text style={styles.moduleName}>{module.name}</Text>
-              </Card>
-            </TouchableOpacity>
-          ))}
+          <TouchableOpacity
+            style={styles.moduleWrapper}
+            activeOpacity={0.7}
+            onPress={() => router.navigate('/komi-send')}
+          >
+            <Card style={styles.moduleCard}>
+              <Text style={styles.moduleIcon}>📤</Text>
+              <Text style={styles.moduleName}>KomiSend</Text>
+            </Card>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.moduleWrapper}
+            activeOpacity={0.7}
+            onPress={() => router.navigate('/komi-sol')}
+          >
+            <Card style={styles.moduleCard}>
+              <Text style={styles.moduleIcon}>💡</Text>
+              <Text style={styles.moduleName}>KomiSol</Text>
+            </Card>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.moduleWrapper}
+            activeOpacity={0.7}
+            onPress={() => router.navigate('/komi-marche')}
+          >
+            <Card style={styles.moduleCard}>
+              <Text style={styles.moduleIcon}>🛒</Text>
+              <Text style={styles.moduleName}>KomiMarché</Text>
+            </Card>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.moduleWrapper}
+            activeOpacity={0.7}
+            onPress={() => router.navigate('/komi-learn')}
+          >
+            <Card style={styles.moduleCard}>
+              <Text style={styles.moduleIcon}>📚</Text>
+              <Text style={styles.moduleName}>KomiLearn</Text>
+            </Card>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.moduleWrapper}
+            activeOpacity={0.7}
+            onPress={() => router.navigate('/komi-voix')}
+          >
+            <Card style={styles.moduleCard}>
+              <Text style={styles.moduleIcon}>🎤</Text>
+              <Text style={styles.moduleName}>KomiVoix</Text>
+            </Card>
+          </TouchableOpacity>
         </View>
       </View>
 
