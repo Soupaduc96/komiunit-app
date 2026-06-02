@@ -5,20 +5,16 @@ import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { ErrorBoundary } from '@/components/common/error-boundary';
 
 function RootLayoutNav() {
-  const { user, initialized } = useAuth();
-
-  if (!initialized) {
-    return <AnimatedSplashOverlay />;
-  }
+  const { initialized } = useAuth();
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {user ? (
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ animation: 'none' }} />
-      ) : (
         <Stack.Screen name="(auth)" options={{ animation: 'none' }} />
-      )}
-    </Stack>
+      </Stack>
+      {!initialized && <AnimatedSplashOverlay />}
+    </>
   );
 }
 

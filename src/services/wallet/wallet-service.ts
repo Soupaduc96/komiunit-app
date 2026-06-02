@@ -11,7 +11,8 @@ export class WalletService {
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return data ? mapWallet(data) : null;
+    if (!data) return null;
+    return mapWallet(data);
   }
 
   static async getOrCreateWallet(userId: string): Promise<Wallet> {

@@ -19,15 +19,19 @@ export const useWallet = () => {
     setLoading(true);
     setError(null);
     try {
-      const [w, txns] = await Promise.all([
-        WalletService.getOrCreateWallet(userId),
-        TransactionService.getRecentTransactions(userId, RECENT_LIMIT),
-      ]);
+      const w = await WalletService.getOrCreateWallet(userId);
       setWallet(w);
-      setTransactions(txns);
     } catch (err) {
-      console.error('[useWallet] loadWallet failed:', err);
       setError(err instanceof Error ? err.message : 'Failed to load wallet');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const txns = await TransactionService.getRecentTransactions(userId, RECENT_LIMIT);
+      setTransactions(txns);
+    } catch {
+      // non-fatal — balance is already shown
     } finally {
       setLoading(false);
     }

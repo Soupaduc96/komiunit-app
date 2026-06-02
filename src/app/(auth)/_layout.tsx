@@ -4,9 +4,7 @@ import { useAuth } from '@/hooks/use-auth';
 export default function AuthLayout() {
   const { user, initialized } = useAuth();
 
-  if (!initialized) return null;
-
-  if (user) {
+  if (initialized && user) {
     return <Redirect href="/(tabs)" />;
   }
 
