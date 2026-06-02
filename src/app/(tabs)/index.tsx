@@ -1,10 +1,10 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { router } from 'expo-router';
@@ -146,9 +146,11 @@ export default function HomeScreen() {
       flexWrap: 'wrap',
       justifyContent: 'space-between',
     },
-    moduleCard: {
+    moduleWrapper: {
       width: '48%',
       marginBottom: Spacing.two,
+    },
+    moduleCard: {
       paddingVertical: Spacing.three,
       alignItems: 'center',
     },
@@ -194,11 +196,11 @@ export default function HomeScreen() {
   });
 
   const modules = [
-    { id: 'send',   name: 'KomiSend',   icon: '📤', route: '/(tabs)/komi-send'   },
-    { id: 'sol',    name: 'KomiSol',    icon: '💡', route: '/(tabs)/komi-sol'    },
-    { id: 'marche', name: 'KomiMarché', icon: '🛒', route: '/(tabs)/komi-marche' },
-    { id: 'learn',  name: 'KomiLearn',  icon: '📚', route: '/(tabs)/komi-learn'  },
-    { id: 'voix',   name: 'KomiVoix',   icon: '🎤', route: '/(tabs)/komi-voix'   },
+    { id: 'send',   name: 'KomiSend',   icon: '📤', route: '/komi-send'   },
+    { id: 'sol',    name: 'KomiSol',    icon: '💡', route: '/komi-sol'    },
+    { id: 'marche', name: 'KomiMarché', icon: '🛒', route: '/komi-marche' },
+    { id: 'learn',  name: 'KomiLearn',  icon: '📚', route: '/komi-learn'  },
+    { id: 'voix',   name: 'KomiVoix',   icon: '🎤', route: '/komi-voix'   },
   ];
 
   return (
@@ -226,15 +228,21 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>Services</Text>
         <View style={styles.moduleGrid}>
           {modules.map((module) => (
-            <Pressable
+            <TouchableOpacity
               key={module.id}
-              onPress={() => router.push(module.route as any)}
+              style={styles.moduleWrapper}
+              activeOpacity={0.7}
+              onPress={() => {
+                alert(`Clicked ${module.id}`);
+                console.log('Navigate:', module.id);
+                router.navigate(module.route as any);
+              }}
             >
               <Card style={styles.moduleCard}>
                 <Text style={styles.moduleIcon}>{module.icon}</Text>
                 <Text style={styles.moduleName}>{module.name}</Text>
               </Card>
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Colors, Spacing } from '@/constants/theme';
 
 export interface CardProps {
@@ -50,8 +50,16 @@ export const Card: React.FC<CardProps> = ({
     },
   });
 
+  if (onPress) {
+    return (
+      <Pressable onPress={onPress} style={[styles.card, style]}>
+        {children}
+      </Pressable>
+    );
+  }
+
   return (
-    <View style={[styles.card, style]} onTouchEnd={onPress}>
+    <View style={[styles.card, style]}>
       {children}
     </View>
   );
